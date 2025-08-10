@@ -1,7 +1,43 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  migrator:
+    image: migrate/migrate:4
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./migration:/migrations:ro
+    command: [
+      "-database", "postgres://postgres:1234@db:5432/postgres?sslmode=disable",
+      "-source",  "file:///migrations/postgres/auth",
+      "-verbose",
+      "up"
+    ]
+    restart: "no"
   app:
     build: .
+    environment:
+      DATABASE_URL: postgres://postgres:1234@db:5432/postgres?sslmode=disable
+      JWT_SECRET: some_secret
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8080:8080"
+
+volumes:
+  pgdata: {}

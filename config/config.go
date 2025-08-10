@@ -7,7 +7,7 @@ import (
 )
 
 func New() error {
-	err := godotenv.Load(".env")
+	err := godotenv.Load()
 	if err != nil {
 		return fmt.Errorf("godotenv.Load: %w", err)
 	}
