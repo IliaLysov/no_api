@@ -23,6 +23,8 @@ func (u *UseCase) CreateUser(ctx context.Context, input dto.CreateUserInput) (dt
 		return output, fmt.Errorf("u.postgres.CreateUser: %w", err)
 	}
 
+	u.email.Send(user.Email, "Account created", fmt.Sprintf("Account created with id: %d", id))
+
 	output.ID = id
 	return output, nil
 }

@@ -11,6 +11,7 @@ func AuthDomain(d Dependencies) {
 	authUseCase := usecase.New(
 		postgres.New(d.Postgres.Pool),
 		jwt.New(),
+		d.Email,
 	)
 
 	http_router.AuthRouter(d.RouterHTTP, authUseCase)

@@ -16,11 +16,16 @@ type JWT interface {
 	Verify(string) (string, error)
 }
 
+type Email interface {
+	Send(to, subject, body string) error
+}
+
 type UseCase struct {
 	postgres Postgres
 	JWT      JWT
+	email    Email
 }
 
-func New(p Postgres, jwt JWT) *UseCase {
-	return &UseCase{postgres: p, JWT: jwt}
+func New(p Postgres, jwt JWT, email Email) *UseCase {
+	return &UseCase{postgres: p, JWT: jwt, email: email}
 }

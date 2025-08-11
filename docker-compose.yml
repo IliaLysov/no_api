@@ -30,9 +30,8 @@ services:
     restart: "no"
   app:
     build: .
-    environment:
-      DATABASE_URL: postgres://postgres:1234@db:5432/postgres?sslmode=disable
-      JWT_SECRET: some_secret
+    env_file:
+      - .env.compose
     depends_on:
       db:
         condition: service_healthy

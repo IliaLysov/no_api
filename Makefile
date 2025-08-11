@@ -25,3 +25,6 @@ migrate-up:
 
 migrate-down:
 	migrate -database "$(DATABASE_URL)" -source "$(MIGRATE_SOURCE)" down -all
+
+migrate-drop:
+	migrate -database "$(DATABASE_URL)" -source "$(MIGRATE_SOURCE)" drop -f

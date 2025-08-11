@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"no_api/pkg/email"
 	"no_api/pkg/http_server"
 	"no_api/pkg/postgres"
 	"no_api/pkg/router"
@@ -16,6 +17,7 @@ import (
 type Dependencies struct {
 	RouterHTTP *chi.Mux
 	Postgres   *postgres.Pool
+	Email      *email.Email
 }
 
 func Run(ctx context.Context) (err error) {
@@ -26,6 +28,8 @@ func Run(ctx context.Context) (err error) {
 		return fmt.Errorf("postgres.New: %w", err)
 	}
 	defer deps.Postgres.Close()
+
+	deps.Email = email.New()
 
 	deps.RouterHTTP = router.New()
 
