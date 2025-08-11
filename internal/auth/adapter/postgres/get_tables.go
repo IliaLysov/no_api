@@ -7,7 +7,6 @@ import (
 )
 
 func (p *Postgres) GetTables(ctx context.Context) (err error) {
-	fmt.Println("--- get tables ---")
 	rows, err := p.pool.Query(ctx, `
 		SELECT tablename 
 		FROM pg_catalog.pg_tables

@@ -16,6 +16,10 @@ type JWT interface {
 	Verify(string) (string, error)
 }
 
+type Kafka interface {
+	CreateEvent(ctx context.Context, e entity.CreateEvent) error
+}
+
 type Email interface {
 	Send(to, subject, body string) error
 }
@@ -24,8 +28,9 @@ type UseCase struct {
 	postgres Postgres
 	JWT      JWT
 	email    Email
+	Kafka    Kafka
 }
 
-func New(p Postgres, jwt JWT, email Email) *UseCase {
-	return &UseCase{postgres: p, JWT: jwt, email: email}
+func New(p Postgres, jwt JWT, email Email, k Kafka) *UseCase {
+	return &UseCase{postgres: p, JWT: jwt, email: email, Kafka: k}
 }

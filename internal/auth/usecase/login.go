@@ -30,5 +30,16 @@ func (u *UseCase) Login(ctx context.Context, input dto.Login) (dto.LoginOutput, 
 	if err != nil {
 		return output, fmt.Errorf("u.jwt.CreateToken: %w", err)
 	}
+
+	event := entity.CreateEvent{
+		ID:   strconv.Itoa(int(id)),
+		Name: fmt.Sprintf("login %s", user.Email),
+	}
+
+	err = u.Kafka.CreateEvent(ctx, event)
+	if err != nil {
+		return output, err
+	}
+
 	return output, nil
 }

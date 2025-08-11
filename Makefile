@@ -7,6 +7,7 @@ MIGRATE_SOURCE = file://migration/postgres/auth
 compose:
 	docker compose run --rm migrator
 	docker compose build --no-cache app
+	docker compose up -d notify
 	docker compose up -d app
 
 

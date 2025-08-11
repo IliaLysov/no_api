@@ -17,7 +17,7 @@ func New(handler http.Handler, port string) *Server {
 	httpServer := &http.Server{
 		Handler:      handler,
 		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 5 * time.Second,
+		WriteTimeout: 30 * time.Second,
 		Addr:         net.JoinHostPort("", port),
 	}
 

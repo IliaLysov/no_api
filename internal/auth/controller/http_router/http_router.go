@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	ver1 "no_api/internal/auth/controller/http_router/v1"
+	"no_api/internal/auth/entity"
 	"no_api/internal/auth/usecase"
 	"strings"
 
@@ -49,6 +50,17 @@ func AuthRouter(r *chi.Mux, uc *usecase.UseCase) {
 			r.With(AuthMiddleware(uc)).Get("/protected", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				id, ok := r.Context().Value(userIDKey).(string)
 				fmt.Println("id", id)
+
+				event := entity.CreateEvent{
+					ID:   id,
+					Name: fmt.Sprintf("protected route by %s", id),
+				}
+
+				err := uc.Kafka.CreateEvent(r.Context(), event)
+				if err != nil {
+					fmt.Println("protected create event error", err)
+				}
+
 				if !ok {
 					http.Error(w, "error to get id from token", http.StatusUnauthorized)
 					return

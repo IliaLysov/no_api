@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"no_api/pkg/email"
 	"no_api/pkg/http_server"
+	"no_api/pkg/kafka_writer"
 	"no_api/pkg/postgres"
 	"no_api/pkg/router"
 	"os"
@@ -15,9 +16,10 @@ import (
 )
 
 type Dependencies struct {
-	RouterHTTP *chi.Mux
-	Postgres   *postgres.Pool
-	Email      *email.Email
+	RouterHTTP  *chi.Mux
+	Postgres    *postgres.Pool
+	Email       *email.Email
+	KafkaWriter *kafka_writer.Writer
 }
 
 func Run(ctx context.Context) (err error) {
@@ -28,6 +30,12 @@ func Run(ctx context.Context) (err error) {
 		return fmt.Errorf("postgres.New: %w", err)
 	}
 	defer deps.Postgres.Close()
+
+	deps.KafkaWriter, err = kafka_writer.New()
+	if err != nil {
+		return fmt.Errorf("kafka_writer.New: %w", err)
+	}
+	defer deps.KafkaWriter.Close()
 
 	deps.Email = email.New()
 
