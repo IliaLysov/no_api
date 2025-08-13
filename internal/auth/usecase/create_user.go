@@ -6,6 +6,7 @@ import (
 	"no_api/internal/auth/dto"
 	"no_api/internal/auth/entity"
 	"strconv"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -25,8 +26,10 @@ func (u *UseCase) CreateUser(ctx context.Context, input dto.CreateUserInput) (dt
 	}
 
 	event := entity.CreateEvent{
-		ID:   strconv.Itoa(int(id)),
-		Name: fmt.Sprintf("create user %s", user.Email),
+		ID:         strconv.Itoa(int(id)),
+		OccurredAt: time.Now().UTC(),
+		Type:       "user.created",
+		Payload:    entity.UserCreated{Email: user.Email},
 	}
 
 	err = u.Kafka.CreateEvent(ctx, event)

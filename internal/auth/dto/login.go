@@ -12,6 +12,7 @@ type LoginOutput struct {
 type Login struct {
 	Email    string
 	Password string
+	IP       string
 }
 
 func (i *Login) Validate() error {

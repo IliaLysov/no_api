@@ -8,6 +8,7 @@ import (
 	"no_api/internal/auth/entity"
 	"no_api/internal/auth/usecase"
 	"strings"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -52,8 +53,10 @@ func AuthRouter(r *chi.Mux, uc *usecase.UseCase) {
 				fmt.Println("id", id)
 
 				event := entity.CreateEvent{
-					ID:   id,
-					Name: fmt.Sprintf("protected route by %s", id),
+					ID:         id,
+					OccurredAt: time.Now().UTC(),
+					Type:       "user.created",
+					Payload:    entity.UserProtected{ID: id},
 				}
 
 				err := uc.Kafka.CreateEvent(r.Context(), event)

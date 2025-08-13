@@ -12,6 +12,7 @@ func (h *Handlers) Login(w http.ResponseWriter, r *http.Request) {
 	input := dto.Login{
 		Email:    r.FormValue("email"),
 		Password: r.FormValue("password"),
+		IP:       r.RemoteAddr,
 	}
 
 	err := input.Validate()
